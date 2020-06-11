@@ -126,9 +126,11 @@ public class RibbonClientConfiguration {
 		return new DummyPing();
 	}
 
+	/**
+	 * 这个bean通常会被三方组件覆盖，比如:EurekaRibbonClientConfiguration/NacosRibbonClientConfiguration
+	 */
 	@Bean
 	@ConditionalOnMissingBean
-	@SuppressWarnings("unchecked")
 	public ServerList<Server> ribbonServerList(IClientConfig config) {
 		if (this.propertiesFactory.isSet(ServerList.class, name)) {
 			return this.propertiesFactory.get(ServerList.class, config, name);
@@ -144,6 +146,9 @@ public class RibbonClientConfiguration {
 		return new PollingServerListUpdater(config);
 	}
 
+	/**
+	 * ribbon的客户端负载均衡器就是这个
+	 */
 	@Bean
 	@ConditionalOnMissingBean
 	public ILoadBalancer ribbonLoadBalancer(IClientConfig config,
@@ -152,13 +157,13 @@ public class RibbonClientConfiguration {
 		if (this.propertiesFactory.isSet(ILoadBalancer.class, name)) {
 			return this.propertiesFactory.get(ILoadBalancer.class, config, name);
 		}
+		//这个构造函数内部会去获取服务列表
 		return new ZoneAwareLoadBalancer<>(config, rule, ping, serverList,
 				serverListFilter, serverListUpdater);
 	}
 
 	@Bean
 	@ConditionalOnMissingBean
-	@SuppressWarnings("unchecked")
 	public ServerListFilter<Server> ribbonServerListFilter(IClientConfig config) {
 		if (this.propertiesFactory.isSet(ServerListFilter.class, name)) {
 			return this.propertiesFactory.get(ServerListFilter.class, config, name);

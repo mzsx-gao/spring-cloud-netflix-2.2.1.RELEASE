@@ -27,6 +27,11 @@ import org.springframework.util.StringUtils;
 
 /**
  * @author Dave Syer
+ * 解析@RibbonClients注解，三方组件集成ribbon通常就是用@RibbonClients注入RibbonClientSpecification类型的bean
+ * 比如: eureka集成ribbon:@RibbonClients(defaultConfiguration =
+ * EurekaRibbonClientConfiguration.class)
+ * nacos集成ribbon: @RibbonClients(defaultConfiguration =
+ * NacosRibbonClientConfiguration.class)
  */
 public class RibbonClientConfigurationRegistrar implements ImportBeanDefinitionRegistrar {
 

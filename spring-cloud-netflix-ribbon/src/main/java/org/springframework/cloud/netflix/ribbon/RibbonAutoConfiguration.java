@@ -67,7 +67,7 @@ import org.springframework.web.client.RestTemplate;
 		ServerIntrospectorProperties.class })
 public class RibbonAutoConfiguration {
 
-	//这个configurations属性主要是由@RibbonClients完成注入的
+	// 这个configurations属性主要是由@RibbonClients完成注入的
 	@Autowired(required = false)
 	private List<RibbonClientSpecification> configurations = new ArrayList<>();
 
@@ -79,6 +79,7 @@ public class RibbonAutoConfiguration {
 		return HasFeatures.namedFeature("Ribbon", Ribbon.class);
 	}
 
+	// 会给每个Ribbon Client创建一个独立的Spring应用上下文ApplicationContext，并在其中加载对应的配置及Ribbon核心接口的实现类
 	@Bean
 	public SpringClientFactory springClientFactory() {
 		SpringClientFactory factory = new SpringClientFactory();
@@ -86,7 +87,8 @@ public class RibbonAutoConfiguration {
 		return factory;
 	}
 
-	//ribbon客户端
+	// ribbon客户端
+	// 此Bean会被注入一个HttpRequest的拦截器中，从服务中选择一个服务，使用其IP地址替换之前生成的HttpRequest的服务名称
 	@Bean
 	@ConditionalOnMissingBean(LoadBalancerClient.class)
 	public LoadBalancerClient loadBalancerClient() {
@@ -129,6 +131,7 @@ public class RibbonAutoConfiguration {
 					.setRequestFactory(ribbonClientHttpRequestFactory);
 		}
 
+		// Http请求工厂
 		@Bean
 		public RibbonClientHttpRequestFactory ribbonClientHttpRequestFactory() {
 			return new RibbonClientHttpRequestFactory(this.springClientFactory);

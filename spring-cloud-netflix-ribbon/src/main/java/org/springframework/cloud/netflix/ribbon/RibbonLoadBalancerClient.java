@@ -113,7 +113,16 @@ public class RibbonLoadBalancerClient implements LoadBalancerClient {
 	 */
 	public <T> T execute(String serviceId, LoadBalancerRequest<T> request, Object hint)
 			throws IOException {
+		/**
+		 * 根据名称获取负载均衡器,最终获取到的ILoadBalancer是RibbonClientConfiguration配置类中定义的ZoneAwareLoadBalancer
+		 * 注意ZoneAwareLoadBalancer中接受ServerList<Server>
+		 * serverList这个参数，而serverList是配置类中定义的bean,三方组件集成
+		 * ribbon就是覆盖ribbonServerList这个bean，该方法内部实现拉取服务列表，比如说:
+		 * 1.eureka集成ribbon就是在EurekaRibbonClientConfiguration中重新定义ribbonServerList这个bean
+		 * 2.nacos集成ribbon就是在NacosRibbonClientConfiguration中重新定义了ribbonServerList这个bean
+		 */
 		ILoadBalancer loadBalancer = getLoadBalancer(serviceId);
+		// 根据负载均衡器获取被选中的服务
 		Server server = getServer(loadBalancer, hint);
 		if (server == null) {
 			throw new IllegalStateException("No instances available for " + serviceId);
@@ -189,6 +198,7 @@ public class RibbonLoadBalancerClient implements LoadBalancerClient {
 		return loadBalancer.chooseServer(hint != null ? hint : "default");
 	}
 
+	// 从SpringClientFactory 里获取指定服务名称对应的负载均衡器
 	protected ILoadBalancer getLoadBalancer(String serviceId) {
 		return this.clientFactory.getLoadBalancer(serviceId);
 	}

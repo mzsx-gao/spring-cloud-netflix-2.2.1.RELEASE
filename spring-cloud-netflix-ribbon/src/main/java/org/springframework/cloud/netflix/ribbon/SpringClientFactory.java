@@ -56,7 +56,7 @@ public class SpringClientFactory extends NamedContextFactory<RibbonClientSpecifi
 	}
 
 	/**
-	 * Get the load balancer associated with the name.
+	 * Get the load balancer associated with the name. 获取指定服务的负载均衡器
 	 * @param name name to search by
 	 * @return {@link ILoadBalancer} instance
 	 * @throws RuntimeException if any error occurs
@@ -118,10 +118,12 @@ public class SpringClientFactory extends NamedContextFactory<RibbonClientSpecifi
 
 	@Override
 	public <C> C getInstance(String name, Class<C> type) {
+		// 尝试从父类获取
 		C instance = super.getInstance(name, type);
 		if (instance != null) {
 			return instance;
 		}
+		// 不存在，那么获取IClientConfig，然后通过此类来实例化
 		IClientConfig config = getInstance(name, IClientConfig.class);
 		return instantiateWithConfig(getContext(name), type, config);
 	}
