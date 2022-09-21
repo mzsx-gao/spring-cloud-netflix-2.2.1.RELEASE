@@ -56,7 +56,8 @@ public class SpringClientFactory extends NamedContextFactory<RibbonClientSpecifi
 	}
 
 	/**
-	 * Get the load balancer associated with the name. 获取指定服务的负载均衡器
+	 * Get the load balancer associated with the name.
+     * 获取指定服务的负载均衡器
 	 * @param name name to search by
 	 * @return {@link ILoadBalancer} instance
 	 * @throws RuntimeException if any error occurs

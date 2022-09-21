@@ -24,6 +24,7 @@ import org.springframework.context.ApplicationListener;
 /**
  * Responsible for eagerly creating the child application context holding the Ribbon
  * related configuration.
+ * RibbonAutoConfiguration配置类中会注册这个bean
  *
  * @author Biju Kunjummen
  */
@@ -44,6 +45,7 @@ public class RibbonApplicationContextInitializer
 	protected void initialize() {
 		if (clientNames != null) {
 			for (String clientName : clientNames) {
+			    //为每一个clientName创建一个spring上下文
 				this.springClientFactory.getContext(clientName);
 			}
 		}

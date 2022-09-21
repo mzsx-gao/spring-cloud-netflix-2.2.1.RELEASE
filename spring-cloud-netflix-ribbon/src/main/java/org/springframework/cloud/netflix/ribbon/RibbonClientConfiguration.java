@@ -148,6 +148,8 @@ public class RibbonClientConfiguration {
 
 	/**
 	 * ribbon的客户端负载均衡器就是这个
+     * 每个服务都会创建一个spring容器，RibbonClientConfiguration就是在创建这个容器时注入到容器中的
+     * NamedContextFactory#createContext#context.register(PropertyPlaceholderAutoConfiguration.class,this.defaultConfigType);
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -158,8 +160,7 @@ public class RibbonClientConfiguration {
 			return this.propertiesFactory.get(ILoadBalancer.class, config, name);
 		}
 		//这个构造函数内部会去获取服务列表
-		return new ZoneAwareLoadBalancer<>(config, rule, ping, serverList,
-				serverListFilter, serverListUpdater);
+		return new ZoneAwareLoadBalancer<>(config, rule, ping, serverList, serverListFilter, serverListUpdater);
 	}
 
 	@Bean

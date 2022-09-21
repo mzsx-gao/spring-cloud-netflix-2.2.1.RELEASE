@@ -28,23 +28,19 @@ import org.springframework.util.StringUtils;
 /**
  * @author Dave Syer
  * 解析@RibbonClients注解，三方组件集成ribbon通常就是用@RibbonClients注入RibbonClientSpecification类型的bean
- * 比如: eureka集成ribbon:@RibbonClients(defaultConfiguration =
- * EurekaRibbonClientConfiguration.class)
- * nacos集成ribbon: @RibbonClients(defaultConfiguration =
- * NacosRibbonClientConfiguration.class)
+ * 比如:
+ * eureka集成ribbon:@RibbonClients(defaultConfiguration = EurekaRibbonClientConfiguration.class)
+ * nacos集成ribbon: @RibbonClients(defaultConfiguration = NacosRibbonClientConfiguration.class)
  */
 public class RibbonClientConfigurationRegistrar implements ImportBeanDefinitionRegistrar {
 
 	@Override
-	public void registerBeanDefinitions(AnnotationMetadata metadata,
-			BeanDefinitionRegistry registry) {
-		Map<String, Object> attrs = metadata
-				.getAnnotationAttributes(RibbonClients.class.getName(), true);
+	public void registerBeanDefinitions(AnnotationMetadata metadata, BeanDefinitionRegistry registry) {
+		Map<String, Object> attrs = metadata.getAnnotationAttributes(RibbonClients.class.getName(), true);
 		if (attrs != null && attrs.containsKey("value")) {
 			AnnotationAttributes[] clients = (AnnotationAttributes[]) attrs.get("value");
 			for (AnnotationAttributes client : clients) {
-				registerClientConfiguration(registry, getClientName(client),
-						client.get("configuration"));
+				registerClientConfiguration(registry, getClientName(client), client.get("configuration"));
 			}
 		}
 		if (attrs != null && attrs.containsKey("defaultConfiguration")) {
@@ -55,11 +51,9 @@ public class RibbonClientConfigurationRegistrar implements ImportBeanDefinitionR
 			else {
 				name = "default." + metadata.getClassName();
 			}
-			registerClientConfiguration(registry, name,
-					attrs.get("defaultConfiguration"));
+			registerClientConfiguration(registry, name, attrs.get("defaultConfiguration"));
 		}
-		Map<String, Object> client = metadata
-				.getAnnotationAttributes(RibbonClient.class.getName(), true);
+		Map<String, Object> client = metadata.getAnnotationAttributes(RibbonClient.class.getName(), true);
 		String name = getClientName(client);
 		if (name != null) {
 			registerClientConfiguration(registry, name, client.get("configuration"));
@@ -81,14 +75,11 @@ public class RibbonClientConfigurationRegistrar implements ImportBeanDefinitionR
 				"Either 'name' or 'value' must be provided in @RibbonClient");
 	}
 
-	private void registerClientConfiguration(BeanDefinitionRegistry registry, Object name,
-			Object configuration) {
-		BeanDefinitionBuilder builder = BeanDefinitionBuilder
-				.genericBeanDefinition(RibbonClientSpecification.class);
+	private void registerClientConfiguration(BeanDefinitionRegistry registry, Object name, Object configuration) {
+		BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(RibbonClientSpecification.class);
 		builder.addConstructorArgValue(name);
 		builder.addConstructorArgValue(configuration);
-		registry.registerBeanDefinition(name + ".RibbonClientSpecification",
-				builder.getBeanDefinition());
+		registry.registerBeanDefinition(name + ".RibbonClientSpecification", builder.getBeanDefinition());
 	}
 
 }

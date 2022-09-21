@@ -87,9 +87,12 @@ public class RibbonAutoConfiguration {
 		return factory;
 	}
 
-	// ribbon客户端
-	// 此Bean会被注入一个HttpRequest的拦截器中，从服务中选择一个服务，使用其IP地址替换之前生成的HttpRequest的服务名称
-	@Bean
+    /**
+     * ribbon客户端
+     * 此Bean会被注入一个HttpRequest的拦截器(spring-cloud-commons包里的LoadBalancerInterceptor)中，
+     * 从服务中选择一个服务，使用其IP地址替换之前生成的HttpRequest的服务名称
+     */
+    @Bean
 	@ConditionalOnMissingBean(LoadBalancerClient.class)
 	public LoadBalancerClient loadBalancerClient() {
 		return new RibbonLoadBalancerClient(springClientFactory());
@@ -98,8 +101,7 @@ public class RibbonAutoConfiguration {
 	@Bean
 	@ConditionalOnClass(name = "org.springframework.retry.support.RetryTemplate")
 	@ConditionalOnMissingBean
-	public LoadBalancedRetryFactory loadBalancedRetryPolicyFactory(
-			final SpringClientFactory clientFactory) {
+	public LoadBalancedRetryFactory loadBalancedRetryPolicyFactory(final SpringClientFactory clientFactory) {
 		return new RibbonLoadBalancedRetryFactory(clientFactory);
 	}
 
@@ -112,8 +114,7 @@ public class RibbonAutoConfiguration {
 	@Bean
 	@ConditionalOnProperty("ribbon.eager-load.enabled")
 	public RibbonApplicationContextInitializer ribbonApplicationContextInitializer() {
-		return new RibbonApplicationContextInitializer(springClientFactory(),
-				ribbonEagerLoadProperties.getClients());
+		return new RibbonApplicationContextInitializer(springClientFactory(), ribbonEagerLoadProperties.getClients());
 	}
 
 	@Configuration(proxyBeanMethods = false)

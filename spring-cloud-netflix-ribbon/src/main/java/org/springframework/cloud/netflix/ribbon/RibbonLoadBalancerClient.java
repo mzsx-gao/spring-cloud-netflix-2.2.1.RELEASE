@@ -115,9 +115,8 @@ public class RibbonLoadBalancerClient implements LoadBalancerClient {
 			throws IOException {
 		/**
 		 * 根据名称获取负载均衡器,最终获取到的ILoadBalancer是RibbonClientConfiguration配置类中定义的ZoneAwareLoadBalancer
-		 * 注意ZoneAwareLoadBalancer中接受ServerList<Server>
-		 * serverList这个参数，而serverList是配置类中定义的bean,三方组件集成
-		 * ribbon就是覆盖ribbonServerList这个bean，该方法内部实现拉取服务列表，比如说:
+		 * 注意ZoneAwareLoadBalancer中接受ServerList<Server> serverList这个参数，而serverList是配置类中定义的bean,
+         * 三方组件集成ribbon就是覆盖ribbonServerList这个bean，该方法内部实现拉取服务列表，比如说:
 		 * 1.eureka集成ribbon就是在EurekaRibbonClientConfiguration中重新定义ribbonServerList这个bean
 		 * 2.nacos集成ribbon就是在NacosRibbonClientConfiguration中重新定义了ribbonServerList这个bean
 		 */
